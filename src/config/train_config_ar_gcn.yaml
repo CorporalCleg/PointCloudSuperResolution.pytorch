@@ -32,7 +32,7 @@ optimizer: 'adam' # adam
 lr: 0.001
 momentum: 0.9
 weight_decay: 0.00001
-batch_size: 12
+batch_size: 8
 max_epoch: 40
 save_steps: 10
 

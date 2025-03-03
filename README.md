@@ -4,6 +4,13 @@ This repository is implementation of AR-GCN(https://arxiv.org/abs/1908.02111) fr
 
 The model implementations are in `src/model`
 
+# Intsallation 
+
+```
+conda env create -f environment.yml
+
+conda activate pytorch3d_env
+```
 ## Note
 
 The code is tested under Pytorch 1.9.0 and Python 3.8 on Ubuntu 18.04 LTS.
@@ -66,4 +73,4 @@ python test.py # refer 'src/config/test_config.yaml' for test settings
 - (partially fixed) Performance is relatively low compared to the author's implementation. Especially during GAN training phase, discriminator does not trained well compare to the author's implementation.  
 
 ### Contact
-hk.kim@jbnu.ac.kr
+swampinhabitant@icloud.com
