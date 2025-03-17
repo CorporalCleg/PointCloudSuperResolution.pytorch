@@ -21,6 +21,9 @@ def group_point(x, idx):
 def group(xyz, points, k):
     _, idx = knn_point(k+1, xyz, xyz)
     idx = idx[:,1:,:] # exclude self matching
+
+    # _, idx = knn_point(k, xyz, xyz)
+
     grouped_xyz = group_point(xyz, idx) # (batch_size, num_dim, k, num_points)
     b,d,n = xyz.shape
     grouped_xyz -= xyz.unsqueeze(2).expand(-1,-1,k,-1) # translation normalization, (batch_size, num_points, k, num_dim(3))

@@ -216,9 +216,9 @@ class PUNetDataset(data.Dataset):
 
 if __name__ == '__main__':
     path = '../../data/Patches_noHole_and_collected.h5'
-    d = PUNetDataset(path=path,split='train')
+    d = PUNetDataset(path=path)
     print(len(d))
 
-    pt, label, gt = d[0]
+    pt, label, gt = d[np.random.randint(0, len(d) - 1)]
 
     matplotlib_3d_ptcloud(pt)

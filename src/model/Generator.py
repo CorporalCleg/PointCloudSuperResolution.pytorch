@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import model.grouping_util as gutil
+import grouping_util as gutil
 import torch_geometric.nn as gnn
 
 def init_weight_(m):
@@ -72,15 +72,10 @@ class FeatureNet(nn.Module):
 #             b,d,n = points.shape
 #             center_points = points.view(b, d, 1, n)
 #             points = self.conv_layers[2 * idx](center_points)  # (batch_size, num_dim(128), 1, num_points)
-#             # print(f'center point shape {center_points.shape}')
-
 #             # Neighbor Conv
 #             grouped_points_nn = self.conv_layers[2 * idx + 1](grouped_points)
-            
 #             # CNN
-#             points = torch.mean(torch.cat((points, grouped_points_nnt), dim=2), dim=2) + shortcut
-
-#             # points = torch.mean(grouped_points_nn, dim=2) + shortcut
+#             points = torch.mean(torch.cat((points, grouped_points_nn), dim=2), dim=2) + shortcut
 
 #             if idx == self.num_blocks-1:
 #                 num_points = xyz.shape[-1]
@@ -224,7 +219,23 @@ if __name__ == '__main__':
 
     model = Generator(cfg).cuda()
     xyz = torch.rand(24, 3, 32).cuda() # batch, feature, num_points
-
     new_xyz = model(xyz)
 
     print(new_xyz.shape)
+    print(f'num of model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}')
+
+    # target = torch.rand(24, 3, 128).cuda()
+    # opt = torch.optim.Adam(model.parameters(), lr=0.01)
+
+    # for i in range(200):
+    #     new_xyz = model(xyz)
+    #     loss = ((new_xyz - target) ** 2).mean()
+
+    #     opt.zero_grad()
+    #     loss.backward()
+    #     opt.step()
+
+    #     if i % 10 == 0:
+    #         print(f'step {i}, loss: {loss.item():.5f}')
+
+    # print(new_xyz.shape)

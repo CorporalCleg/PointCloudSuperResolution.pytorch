@@ -10,16 +10,26 @@ dataset:
 # result
 ckpt_root: '../ckpt/AR_GCN'
 
+wandb:
+  enable: true
+  api_key: "5a0099d1b74a685f847f4ed9dcbe474e4e5b91ae"
+  project: "pointcloud-super-resolution"
+  name: "experiment-1"
+
 # Network
 network:
   generator:
     k: 8
-    feat_dim: 128
-    res_conv_dim: 128
+    # feat_dim: 128
+    # res_conv_dim: 128
+    feat_dim: 16
+    res_conv_dim: 16
   discriminator:
     k: 8
-    feat_dim: 64
-    res_conv_dim: 64
+    feat_dim: 16
+    res_conv_dim: 16
+    # feat_dim: 64
+    # res_conv_dim: 64
 
 loss:
   lambd: 5000.0
@@ -27,12 +37,14 @@ loss:
 # train
 seed: 0
 phase: 'gan' #pre/gan
-pre_weight: '../ckpt/AR_GCN/pre_result_80_0.000410.pt'
+# pre_weight: '../ckpt/AR_GCN/pre_result_80_0.000410.pt'
+pre_weight: '../ckpt/AR_GCN/pre_result_1_0.000924.pt'
 optimizer: 'adam' # adam
 lr: 0.001
 momentum: 0.9
 weight_decay: 0.00001
-batch_size: 8
+# batch_size: 8
+batch_size: 2
 max_epoch: 40
 save_steps: 10
 
