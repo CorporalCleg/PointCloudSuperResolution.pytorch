@@ -1,0 +1,50 @@
+# CUDA
+cuda_devices: '0'   # multi-gpu training is available
+
+# dataset
+dataset:
+  data_path: '../data/Patches_noHole_and_collected.h5'
+  in_point: 1024
+  data_augmentation: true
+
+# result
+ckpt_root: '../ckpt/AR_GCN'
+
+# Network
+network:
+  generator:
+    k: 8
+    feat_dim: 16
+    res_conv_dim: 16
+    # feat_dim: 128
+    # res_conv_dim: 128
+  discriminator:
+    k: 8
+    # feat_dim: 64
+    # res_conv_dim: 64
+    feat_dim: 16
+    res_conv_dim: 16
+
+loss:
+  lambd: 5000
+
+wandb:
+  enable: true
+  api_key: "5a0099d1b74a685f847f4ed9dcbe474e4e5b91ae"
+  project: "pointcloud-super-resolution"
+  name: "experiment-1"
+
+# train
+seed: 0
+phase: 'pre' #pre/gan
+optimizer: 'adam' # adam
+lr: 0.001
+momentum: 0.9
+weight_decay: 0.00001
+batch_size: 4
+max_epoch: 80
+save_steps: 10
+
+#scheduler: 'cos' # step/cos
+#milestones: [30, 60, 90]
+#gamma: 0.1

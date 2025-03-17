@@ -20,6 +20,25 @@ class PointCloudSuperResolutionTrainer:
         self.cfg = get_train_config(config_path)
         os.environ['CUDA_VISIBLE_DEVICES'] = self.cfg['cuda_devices']
 
+        # Initialize wandb if enabled
+        if self.cfg.get('wandb', {}).get('enable', False):
+            import wandb
+            api_key = self.cfg['wandb'].get('api_key')
+            if api_key:
+                wandb.login(key=api_key)
+            # Create a sanitized config for logging (excluding API key)
+            wandb_config = self.cfg.copy()
+            if 'wandb' in wandb_config and 'api_key' in wandb_config['wandb']:
+                del wandb_config['wandb']['api_key']
+            # Initialize the run
+            run_name = self.cfg['wandb'].get('name', None)
+            wandb.init(
+                project=self.cfg['wandb'].get('project', 'pointcloud-super-resolution'),
+                name=run_name,
+                config=wandb_config
+            )
+
+
         self.generator = self.init_generator()
         self.discriminator = self.init_discriminator()
         self.pre_gen_optim, self.d_optim, self.pre_gen_scheduler, self.d_scheduler = self.init_optimizer()
@@ -168,7 +187,6 @@ class PointCloudSuperResolutionTrainer:
         train_dl = self.init_dataloader()
         current_phase = self.cfg['phase']
 
-
         if current_phase == 'gan':
             assert os.path.exists(self.cfg['pre_weight'])
             self.generator.load_state_dict(torch.load(self.cfg['pre_weight'], map_location=torch.device('cuda')))
@@ -186,11 +204,33 @@ class PointCloudSuperResolutionTrainer:
             if current_phase == 'pre':
                 cd_loss, _, _, _ = self.do_train(train_dl, 'pre')
                 logging.info('{} Epoch {}, Total loss {:.6f}'.format(datetime.datetime.now(), epoch, cd_loss))
+            
+                # Log to wandb
+                if self.cfg.get('wandb', {}).get('enable', False):
+                    import wandb
+                    wandb.log({
+                        'epoch': epoch,
+                        'cd_loss': cd_loss,
+                        'lr_generator': self.pre_gen_optim.param_groups[0]['lr']
+                    })
+
             elif current_phase == 'gan':
                 train_loss, cd_loss, g_loss, d_loss = self.do_train(train_dl, phase='gan')
                 logging.info('{} Epoch {}, Total loss {:.6f}, CD loss: {:.6f}, G Loss {:.6f}, D Loss {:.6f}'.format(datetime.datetime.now(),
                                                                                                epoch, train_loss, cd_loss,
                                                                                                g_loss, d_loss))
+                # Log to wandb
+                if self.cfg.get('wandb', {}).get('enable', False):
+                    import wandb
+                    wandb.log({
+                        'epoch': epoch,
+                        'total_loss': train_loss,
+                        'cd_loss': cd_loss,
+                        'g_loss': g_loss,
+                        'd_loss': d_loss,
+                        'lr_generator': self.pre_gen_optim.param_groups[0]['lr'],
+                        'lr_discriminator': self.d_optim.param_groups[0]['lr']
+                    })
 
             if epoch == 1 or epoch % self.cfg['save_steps'] == 0:
                torch.save(self.generator.state_dict(), os.path.join(self.cfg['ckpt_root'], '{}_result_{}_{:.6f}.pt'.format(self.cfg['phase'], epoch, cd_loss)))
