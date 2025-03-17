@@ -14,16 +14,16 @@ ckpt_root: '../ckpt/AR_GCN'
 network:
   generator:
     k: 8
-    feat_dim: 16
-    res_conv_dim: 16
-    # feat_dim: 128
-    # res_conv_dim: 128
+    # feat_dim: 16
+    # res_conv_dim: 16
+    feat_dim: 128
+    res_conv_dim: 128
   discriminator:
     k: 8
-    # feat_dim: 64
-    # res_conv_dim: 64
-    feat_dim: 16
-    res_conv_dim: 16
+    feat_dim: 64
+    res_conv_dim: 64
+    # feat_dim: 16
+    # res_conv_dim: 16
 
 loss:
   lambd: 5000
@@ -41,7 +41,7 @@ optimizer: 'adam' # adam
 lr: 0.001
 momentum: 0.9
 weight_decay: 0.00001
-batch_size: 4
+batch_size: 8
 max_epoch: 80
 save_steps: 10
 

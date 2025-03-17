@@ -12,7 +12,7 @@ ckpt_root: '../ckpt/AR_GCN'
 
 wandb:
   enable: true
-  api_key: "5a0099d1b74a685f847f4ed9dcbe474e4e5b91ae"
+  api_key: "xxxx"
   project: "pointcloud-super-resolution"
   name: "experiment-1"
 

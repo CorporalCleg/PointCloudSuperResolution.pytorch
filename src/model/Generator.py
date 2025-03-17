@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import grouping_util as gutil
+import model.grouping_util as gutil
 import torch_geometric.nn as gnn
 
 def init_weight_(m):
@@ -128,7 +128,7 @@ class ResGraphConvUnpool(nn.Module):
         super(ResGraphConvUnpool, self).__init__()
         self.k = k
         self.alpha = k / (k+1)
-        self.num_blocks = 12
+        self.num_blocks = 4 #12
 
         self.bn_relu_layers = nn.ModuleList()
         for i in range(self.num_blocks):
